@@ -33,3 +33,78 @@ print(emp.name)
 12.  Use docstring
 
 ## Instance and class data
+
+1. Instance data referred by `self.` whereas class data is referred by `classname.`
+2. Class attributes are used for global value and common values
+3. Class method is called used by decorator `@classmethod` and instead of self we use cls
+   - No access to `self` variable
+   -  Invoked by `classname.`\
+   - Used for altenative constructor with return statement as `return cls(arg1)`
+```python
+class BetterDate:
+    def __init__(self, year, month, day):
+      self.year, self.month, self.day = year, month, day
+      
+    @classmethod
+    def from_str(cls, datestr):
+        year, month, day = map(int, datestr.split("-"))
+        return cls(year, month, day)
+```
+4. Class Inheritance: Helps in code reuse
+   - Inheritance represents 'is a' relationship
+   - `isinstance` function is true for both parent and child class
+
+5. The fact that the instances of a child class are also instances of the parent class allows you to create consistent interfaces
+> Subclass example
+```python
+class Employee:
+  MIN_SALARY = 30000    
+
+  def __init__(self, name, salary=MIN_SALARY):
+      self.name = name
+      if salary >= Employee.MIN_SALARY:
+        self.salary = salary
+      else:
+        self.salary = Employee.MIN_SALARY
+  def give_raise(self, amount):
+    self.salary += amount      
+        
+# MODIFY Manager class and add a display method
+class Manager(Employee):
+  def display(self):
+    print(f"Manager {self.name}")
+```
+
+6.  Method inheritance
+```python
+class Employee:
+    def __init__(self, name, salary=30000):
+        self.name = name
+        self.salary = salary
+
+    def give_raise(self, amount):
+        self.salary += amount
+
+        
+class Manager(Employee):
+    def display(self):
+        print("Manager ", self.name)
+
+    def __init__(self, name, salary=50000, project=None):
+        Employee.__init__(self, name, salary)
+        self.project = project
+
+    # Add a give_raise method
+    def give_raise(self,amount,bonus=1.05):
+        
+        Employee.give_raise(self,amount*bonus)
+    
+    
+mngr = Manager("Ashta Dunbar", 78500)
+mngr.give_raise(1000)
+print(mngr.salary)
+mngr.give_raise(2000, bonus=1.03)
+print(mngr.salary)
+#79550.0
+#81610.0
+```
