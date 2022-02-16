@@ -58,3 +58,7 @@ dogs[(dogs["height_cm"] > 60) & (dogs["color"] == "tan")]
 # Multiples values
 dogs[dogs["color"].isin(["black","white","red"])]
 ```
+
+
+## 3. Aggregating Dataframes
+
