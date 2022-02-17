@@ -108,3 +108,36 @@ print(mngr.salary)
 #79550.0
 #81610.0
 ```
+
+## Integrating with standard python
+
+1. Example of operator overloading `__eq__(self,other)` :
+   + When compare two objects it returns `False` (if even internal element are same)
+   + When comaparing numpy array elements ,same elements return `True`
+   + `__ne__`,`__ge__`,`__le__`,`__gt__`.`__lt__` are some other operators
+   + `__hash__` is used to assign integer to object and can be used for key
+   + Similar object with same elements can returns equal hence need to check for class type too
+> `__eq__` example
+```python
+class BankAccount:
+   # MODIFY to initialize a number attribute
+    def __init__(self, number,balance=0):
+        self.balance = balance
+        self.number = number
+      
+    def withdraw(self, amount):
+        self.balance -= amount 
+    
+    # Define __eq__ that returns True if the number attributes are equal 
+    def __eq__(self, other):
+        return (self.number == other.number) and (type(self)==type(other))   
+``` 
+
+2. Comparing parent and child object methond, child object `__eq__()` is called
+
+
+
+
+
+
+ 
