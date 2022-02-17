@@ -133,8 +133,46 @@ class BankAccount:
         return (self.number == other.number) and (type(self)==type(other))   
 ``` 
 
-2. Comparing parent and child object methond, child object `__eq__()` is called
+2. Comparing parent and child objects, child object `__eq__()` is called .
+3. `__str__()` and `__repr__()` are called for string representation
+    - `__str__()` is used by `str()` and `print()` method
+    - `__repr__()` is used when typing in console and also `repr` method
+    - `repr`(reproducible representation) is for developer.So better to print the syntax that can use to recreate the object
 
+> `__repr__` and `__str__` example
+```python
+class Employee:
+    def __init__(self, name, salary=30000):
+        self.name, self.salary = name, salary
+      
+
+    def __str__(self):
+        s = "Employee name: {name}\nEmployee salary: {salary}".format(name=self.name, salary=self.salary)      
+        return s
+      
+    # Add the __repr__method  
+    def __repr__(self):
+        s= "Employee(\"{}\", {})".format(self.name,self.salary)
+        return s
+
+```
+
+4. Exception : `try`-`except`-`finally` code
+5. Standard exceptions are inherited fron `Exception` and `BaseException`
+6. Inheriting exception class can build custom exception
+> Error handling example
+```python
+def invert_at_index(x, ind):
+    try:
+        return 1/x[ind]
+    except ZeroDivisionError:
+        print("Cannot divide by zero!")
+    except IndexError:
+        print("Index out of range!")
+
+```
+7. `except` block for a parent exception will catch child exceptions
+8. It's better to include an `except` block for a child exception before the block for a parent exception, otherwise the child exceptions will be always be caught in the parent block, and the `except` block for the child will never be executed.
 
 
 
