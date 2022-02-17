@@ -1,5 +1,6 @@
 # OOP
 
+This cheatsheet is built based on [DataCamp course: *Object Oriented programming in Python*](https://campus.datacamp.com/courses/object-oriented-programming-in-python)
 ## OOP fundamentals
 
 1. In Python everything is object
@@ -174,8 +175,150 @@ def invert_at_index(x, ind):
 7. `except` block for a parent exception will catch child exceptions
 8. It's better to include an `except` block for a child exception before the block for a parent exception, otherwise the child exceptions will be always be caught in the parent block, and the `except` block for the child will never be executed.
 
+## Best practices of class design
 
+1. `Polymorphism`: Using a unified interface to operate on object of different classes
+2. `Liskov substitution function`: objects of a superclass shall be replaceable with objects of its subclasses without breaking the application
+3. The classic example of a problem that violates the Liskov Substitution Principle is the Circle-Ellipse problem, sometimes called the Square-Rectangle problem.
+> Square-rectange problem
+```python
+class Rectangle:
+    def __init__(self, w,h):
+      self.w, self.h = w,h
+      
+# Define set_h to set h       
+    def set_h(self, h):
+      self.h = h
 
+# Define set_w to set w
+    def set_w(self, w):
+      self.w = w   
+      
+class Square(Rectangle):
+    def __init__(self, w):
+      self.w, self.h = w, w 
+      
+# Define set_h to set w and h 
+    def set_h(self, h):
+      self.h = h
+      self.w = h
+      
+# Define set_w to set w and h 
+    def set_w(self, w):
+      self.w = w   
+      self.h = w  
+```
+*Violation of `Liskov substitution function`*: Each of the setter methods of Square change both h and w attributes, while setter methods of Rectangle change only one attribute at a time, so the Square objects cannot be substituted for Rectangle into programs that rely on one attribute staying constant.
 
+4. All class data in python is public.To make private use:
+   - Naming convention(start attribute name/method name with `_`)
+   - `@property` method
+   - Using `__getattr__()` and `__setattr__()`
+   - starts with `__` Not inherited and used for Name mangling
+   - Attributes should not end with "__" as it is reserved for internal usage.
+
+> Private attribute and method example
+```python
+# Add class attributes for max number of days and months
+class BetterDate:
+    _MAX_DAYS = 30
+    _MAX_MONTH = 12
+    def __init__(self, year, month, day):
+        self.year, self.month, self.day = year, month, day
+        
+    @classmethod
+    def from_str(cls, datestr):
+        year, month, day = map(int, datestr.split("-"))
+        return cls(year, month, day)
+    
+    # Add _is_valid() checking day and month values
+    def _is_valid(self):
+        return (self.day<=BetterDate._MAX_DAYS) and (self.month<=BetterDate._MAX_MONTH)
+    
+bd1 = BetterDate(2020, 4, 30)
+print(bd1._is_valid())
+#True
+bd2 = BetterDate(2020, 6, 45)
+print(bd2._is_valid())
+#False
+```
+5. The @property decorator is a built-in decorator in Python for the property() function. Use @property decorator on any method in the class to use the method as a property
+   - `@property`: Declares the method as a property.
+   - `@<property-name>.setter`: Specifies the setter method for a property that sets the value to a property.
+   - `@<property-name>.deleter`: Specifies the delete method as a property that deletes a property.
+> @property example:
+```python
+class Student:
+
+    def __init__(self, name):
+        self.__name=name
+
+    @property
+    def name(self):
+        return self.__name
+
+    @name.setter   #property-name.setter decorator
+    def name(self, value):
+        self.__name = value
+```
+> `@property`:Example 2
+```python
+class Customer:
+    def __init__(self, name, new_bal):
+        self.name = name
+        if new_bal < 0:
+           raise ValueError("Invalid balance!")
+        self._balance = new_bal  
+
+    # Add a decorated balance() method returning _balance        
+    @property
+    def balance(self):
+        return self._balance
+
+    # Add a setter balance() method
+    @balance.setter
+    def balance(self, new_bal):
+        # Validate the parameter value
+        if new_bal < 0:
+           raise ValueError("Invalid balance!")
+        self._balance = new_bal
+        print("Setter method called")
+
+# Create a Customer        
+cust = Customer("Belinda Lutz",2000)
+
+# Assign 3000 to the balance property
+cust.balance=3000
+
+# Print the balance property
+print(cust.balance)
+# Setter method called
+# 3000
+```
+
+> `@property`: Read only example
+```python
+import pandas as pd
+from datetime import datetime
+
+# MODIFY the class to use _created_at instead of created_at
+class LoggedDF(pd.DataFrame):
+    def __init__(self, *args, **kwargs):
+        pd.DataFrame.__init__(self, *args, **kwargs)
+        self._created_at = datetime.today()
+    
+    def to_csv(self, *args, **kwargs):
+        temp = self.copy()
+        temp["created_at"] = self._created_at
+        pd.DataFrame.to_csv(temp, *args, **kwargs)   
+    
+    # Add a read-only property: _created_at
+    @property
+    def created_at(self):
+        return self._created_at
+
+# Instantiate a LoggedDF called ldf
+ldf = LoggedDF({"col1": [1,2], "col2":[3,4]}) 
+```
 
  
