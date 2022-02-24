@@ -64,5 +64,5 @@ print(names_uppercase)
    + Numpy array supports broadcasting(vectorization)
    + Better indexing compare to python list
    + Boolean indexing
-5. 
+
 
